@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Policy Payments</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+    <!-- jQuery Library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+    <!-- SheetJS Library for Excel export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+
+    <!-- pdfmake Library for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
+
+    <style>
+        /* Improved styling */
+        body {
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #downloadExcelButton,
+        #downloadPDFButton {
+            margin-top: 10px;
+        }
+
+        /* Adjust table style for Bootstrap */
+        #paymentTable {
+            width: 100%;
+        }
+
+        #paymentTable th,
+        #paymentTable td {
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
+    <style media="screen">
+        /* Global styles for the entire page */
+        /* ... */
+    </style>
+    <style media="screen">
+        /* Top bar styles */
+        header {
+            left: 0px;
+            right: 0px;
+            position: fixed;
+            background: #22242A;
+            padding: 20px;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .left_area h3 {
+            color: #fff;
+            margin: 0 auto;
+            text-transform: uppercase;
+            font-size: 22px;
+            font-weight: 900;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .left_area span {
+            color: #19B3D3;
+        }
+    </style>
+    <style media="screen">
+        /* Sidebar styles */
+        .sidebar {
+            background: #2f323a;
+            margin-top: 70px;
+            padding-top: 30px;
+            position: fixed;
+            left: -250px;
+            width: 150px;
+            height: 100%;
+            transition: 0.5s;
+            transition-property: left;
+        }
+
+        .sidebar .profile_image {
+            width: 100px;
+            height: 100px;
+            border-radius: 100px;
+            margin-top:20px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar h4 {
+            color: #ccc;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            color: #fff;
+            display: block;
+            width: 100%;
+            line-height: 60px;
+            text-decoration: none;
+            padding-left: 40px;
+            box-sizing: border-box;
+            transition: 0.5s;
+        }
+
+        .sidebar a:hover {
+            background: #19B3D3;
+        }
+
+        .sidebar i {
+            padding-right: 10px;
+        }
+
+        label #sidebar_btn {
+            z-index: 1;
+            color: #fff;
+            position: fixed;
+            cursor: pointer;
+            left: 20px;
+            padding-left: 30px;
+            font-size: 20px;
+            margin: 5px 0;
+            transition: 0.5s;
+            transition-property: color;
+            margin-top: 17px;
+        }
+
+        label #sidebar_btn:hover {
+            color: #19B3D3;
+        }
+        #check {
+            display: none;
+        }
+
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between; /* Adjust spacing between cards */
+            margin-bottom: 10px; /* Adjust spacing between rows */
+        }
+    </style>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+</head>
+
+<body>
+<input type="checkbox" id="check">
+    <header style="padding-top: 20px;">
+        <label for="check">
+            <i class="fas fa-bars" id="sidebar_btn"></i>
+        </label>
+        <div class="left_area">
+            <h3>Health Insurance Management</h3>
+        </div>
+    </header>
+      <div class="sidebar" style="margin-top: 50px;">
+        <center>
+            <img src="https://images.freeimages.com/fic/images/icons/2526/bloggers/256/admin.png"
+                class="profile_image" alt="">
+            <h4>Admin</h4>
+        </center>
+        <a th:href="@{/dashboard}"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+        <a th:href="@{/getCustomers}"><i class="fas fa-users"></i><span>Customer</span></a>
+        <a th:href="@{/hospitals}"><i class="fas fa-list-alt"></i><span>Hospitals</span></a>
+        <a th:href="@{/list}"><i class="fab fa-product-hunt"></i><span>Policy</span></a>
+        <a th:href="@{/admin-question}"><i class="fas fa-question-circle"></i><span>Questions</span></a>
+        <a th:href="@{/getPayments}"><i class="fas fa-question-circle"></i><span>Payment Section</span></a>
+    </div>
+    
+<br><br>
+    <div class="container mt-5">
+        <div class="row mb-4">
+            <div class="col">
+                <h1 class="text-center">Insurance Policy Payments</h1>
+            </div>
+            <div class="col-md-3 mt-3">
+                <button class="btn btn-primary btn-block" id="downloadExcelButton">Download Excel</button>
+                <button class="btn btn-primary btn-block" id="downloadPDFButton">Download PDF</button>
+            </div>
+        </div>
+        <table id="paymentTable" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Policy ID</th>
+                    <th>Transaction ID</th>
+                    <th>Amount</th>
+                    <th>Payment Mode</th>
+                    <th>Transaction Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Iterate over the list of payments and display each row -->
+                <tr th:each="payment : ${payments}">
+                    <td th:text="${payment.inpp_id}"></td>
+                    <td th:text="${payment.inpp_iplc_id}"></td>
+                    <td th:text="${payment.inpp_trans_id}"></td>
+                    <td th:text="${payment.inpp_amount}"></td>
+                    <td th:text="${payment.inpp_paymode}"></td>
+                    <td th:text="${payment.inpp_date}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- JavaScript for DataTables -->
+    <script>
+        $(document).ready(function () {
+            $('#paymentTable').DataTable();
+        });
+    </script>
+
+    <!-- JavaScript for downloading Excel using SheetJS -->
+    <script>
+        document.getElementById('downloadExcelButton').addEventListener('click', function () {
+            // Select the table by its id
+            const table = document.getElementById('paymentTable');
+
+            // Convert the table data to a worksheet
+            const ws = XLSX.utils.table_to_sheet(table);
+
+            // Create a new workbook and add the worksheet
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Payment Data');
+
+            // Generate and download the Excel file
+            XLSX.writeFile(wb, 'payment_data.xlsx');
+        });
+    </script>
+
+    <!-- JavaScript for downloading PDF using pdfmake -->
+    <script>
+        document.getElementById('downloadPDFButton').addEventListener('click', function () {
+            // Define the table data
+            const tableData = [];
+            const tableHeaders = ["ID", "Policy ID", "Transaction ID", "Amount", "Payment Mode","Transaction Date"];
+
+            // Add table headers
+            tableData.push(tableHeaders);
+
+            // Iterate over the table rows and add data
+            const tableRows = document.querySelectorAll('#paymentTable tbody tr');
+            tableRows.forEach(function (row) {
+                const rowData = [];
+                row.querySelectorAll('td').forEach(function (cell) {
+                    rowData.push(cell.innerText);
+                });
+                tableData.push(rowData);
+            });
+
+            // Create the PDF document definition
+            const pdfDefinition = {
+                content: [
+                    { text: "Insurance Policy Payments", style: "header" },
+                    { table: { headerRows: 1, body: tableData } }
+                ],
+                styles: {
+                    header: {
+                        fontSize: 18,
+                        bold: true,
+                        margin: [0, 0, 0, 10]
+                    }
+                }
+            };
+
+            // Generate and download the PDF
+            pdfMake.createPdf(pdfDefinition).download('payment_data.pdf');
+        });
+    </script>
+      <script>
+        const check = document.getElementById('check');
+        const sidebar = document.querySelector('.sidebar');
+
+        check.addEventListener('change', () => {
+            if (check.checked) {
+                sidebar.style.left = '0';
+            } else {
+                sidebar.style.left = '-250px';
+            }
+        });
+    </script>
+</body>
+
+</html>

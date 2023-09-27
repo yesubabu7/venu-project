@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Insurance Policy Schedules</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+    <!-- jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+    
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+     <style>
+        /* Style for the navigation bar */
+        .navbar {
+            background-color: #007BFF; /* Change this color to your preferred background color */
+            color: #fff; /* Text color for links */
+        }
+
+        /* Style for navigation links */
+        .navbar .nav-link {
+            color: #fff; /* Text color for links in the navigation bar */
+        }
+
+      
+        .navbar .nav-link:hover {
+            color: #f8f9fa; 
+        }
+
+        
+        #insurancePolicyScheduleTable {
+            width: 100%;
+        }
+
+        
+        #insurancePolicyScheduleTable thead {
+            background-color: #343a40; 
+            color: #fff; 
+        }
+
+        /* Style for table rows */
+        #insurancePolicyScheduleTable tbody tr:nth-child(odd) {
+            background-color: #f2f2f2; 
+        }
+
+        /* Style for table rows on hover */
+        #insurancePolicyScheduleTable tbody tr:hover {
+            background-color: #d4d4d4;
+        }
+    </style>
+</head>
+<body>
+   <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <div>&#8801;</div>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/getpolicy}">View Policies</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/insertPolicyForm}">Create Policy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/getpolicySchedule}">View Schedule</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/updatepolicy}">Policy Approval</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/StatusPaymentById}">Tracking</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/link}">Home</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <h1 class="mt-5">Insurance Policy Schedules</h1>
+        <table id="insurancePolicyScheduleTable" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Policy ID</th>
+                    <th>Schedule</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Use Thymeleaf syntax for data binding -->
+                <tr th:each="id, rowStatus : ${distinctIplcIds}">
+                    <td th:text="${id}"></td>
+                    <td>
+                        <button type="button" class="btn btn-success custom-button"
+                            th:onclick="'javascript:editStatus(' + ${id} + ')'">View schedule</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-12 text-center"> <a href="/link" class="btn btn-primary mt-3">Back to Links</a></div>
+    <script th:inline="javascript">
+        function editStatus(id) {
+            var urlWithParams = '/getpolicyScheduleById?iplcId=' + id;
+            window.location.href = urlWithParams;
+        }
+    </script>
+</body>
+</html>

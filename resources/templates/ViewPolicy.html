@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insurance Policies</title>
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css"
+	href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+
+<!-- DataTables JS -->
+<script
+	src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
+<!-- SheetJS Library for Excel export -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+
+<!-- pdfmake Library for PDF generation -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
+
+<style>
+/* Improved styling */
+body {
+	background-color: #f4f4f4;
+	font-family: Arial, sans-serif;
+}
+
+.container-fluid {
+	width: 92%;
+	background-color: #f4f4f4;
+	padding: 20px;
+	border-radius: 5px;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+	text-align: center;
+	color: #333;
+}
+
+#downloadExcelButton, #downloadPDFButton {
+	margin-top: 10px;
+}
+
+/* Adjust table style for Bootstrap */
+table {
+	width: 110%;
+}
+
+#insurancePolicyTable th, #insurancePolicyTable td {
+	text-align: center;
+	vertical-align: middle;
+}
+
+/* Apply alternating row background colors */
+#insurancePolicyTable tbody tr:nth-child(even) {
+	background-color: #f4f4f4; 
+}
+
+#insurancePolicyTable tbody tr:nth-child(odd) {
+	background-color: #fff;
+}
+
+/* Table header background color */
+#insurancePolicyTable thead th {
+	background-color:  #343a40; 
+	color: #fff;
+}
+
+
+/* Style for the navigation bar */
+.navbar {
+	background-color: #007BFF;
+	color: #fff; 
+}
+
+/* Style for navigation links */
+.navbar .nav-link {
+	color: #fff; 
+}
+
+/* Hover effect for navigation links */
+.navbar .nav-link:hover {
+	color: #f8f9fa; 
+}
+</style>
+</head>
+<body>
+
+	<div class="container-fluid mt-3 mb-3">
+		<!-- Navbar -->
+		<nav class="navbar navbar-expand-lg">
+			<div class="container">
+				<a class="navbar-brand" href="#"></a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse"
+					data-target="#navbarNav" aria-controls="navbarNav"
+					aria-expanded="false" aria-label="Toggle navigation">
+					<div>&#8801;</div>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarNav">
+					<ul class="navbar-nav ml-auto">
+						<li class="nav-item"><a class="nav-link"
+							th:href="@{/getpolicy}">View Policies</a></li>
+						<li class="nav-item"><a class="nav-link"
+							th:href="@{/insertPolicyForm}">Create Policy</a></li>
+						<li class="nav-item"><a class="nav-link"
+							th:href="@{/getpolicySchedule}">View Schedule</a></li>
+						<li class="nav-item"><a class="nav-link"
+							th:href="@{/updatepolicy}">Policy Approval</a></li>
+						<li class="nav-item"><a class="nav-link"
+							th:href="@{/StatusPaymentById}">Tracking</a></li>
+					    <li class="nav-item"><a class="nav-link"
+                        th:href="@{/link}">Home</a>
+                    </li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<h1 class="mt-5">Insurance Policies</h1>
+		<table id="insurancePolicyTable" class="table table-bordered">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Customer ID</th>
+					<th>Creation Date</th>
+					<th>Sum Assured</th>
+					<th>Applicable Date</th>
+					<th>No of members Insured</th>
+					<th>Insurance package ID</th>
+					<th>Yearly Premium Amount</th>
+					<th>Payment Mode Count</th>
+					<th>Expiration Date</th>
+					<th>Agent ID</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- Use Thymeleaf syntax for data binding -->
+				<tr th:each="policy : ${policies}">
+					<td th:text="${policy.iplc_id}"></td>
+					<td th:text="${policy.iplc_cust_id}"></td>
+					<td th:text="${policy.iplc_cdate}"></td>
+					<td th:text="${policy.iplc_sum_assured}"></td>
+					<td th:text="${policy.iplc_applicable_date}"></td>
+					<td th:text="${policy.iplc_nom_insured}"></td>
+					<td th:text="${policy.iplc_insp_id}"></td>
+					<td th:text="${policy.iplc_yrly_prem_amount}"></td>
+					<td th:text="${policy.iplc_paymode_count}"></td>
+					<td th:text="${policy.iplc_expdate}"></td>
+					<td th:text="${policy.iplc_agnt_id}"></td>
+					<td th:text="${policy.iplc_status}"></td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="col-md-12 text-center">
+			<button class="btn btn-success" id="downloadExcelButton">Download
+				Excel</button>
+			<button class="btn btn-success ml-2" id="downloadPDFButton">Download
+				PDF</button>
+		</div>
+		<a href="/link" class="btn btn-secondary mt-3">Back To Policy Home</a><br>
+
+	</div>
+
+	<script>
+		$(document).ready(function() {
+			$('#insurancePolicyTable').DataTable();
+		});
+
+		document.getElementById('downloadExcelButton').addEventListener(
+				'click',
+				function() {
+					// Select the table by its id
+					const table = document
+							.getElementById('insurancePolicyTable');
+
+					// Convert the table data to a worksheet
+					const ws = XLSX.utils.table_to_sheet(table);
+
+					// Create a new workbook and add the worksheet
+					const wb = XLSX.utils.book_new();
+					XLSX.utils.book_append_sheet(wb, ws,
+							'Insurance Policy Data');
+
+					// Generate and download the Excel file
+					XLSX.writeFile(wb, 'insurance_policy_data.xlsx');
+				});
+
+		document
+				.getElementById('downloadPDFButton')
+				.addEventListener(
+						'click',
+						function() {
+							// Define the table data
+							const tableData = [];
+							const tableHeaders = [ "ID", "Customer ID",
+									"Creation Date", "Sum Assured",
+									"Applicable Date", "No of members Insured",
+									"Insurance package ID",
+									"Yearly Premium Amount",
+									"Payment Mode Count", "Expiration Date",
+									"Agent ID", "Status" ];
+
+							// Add table headers
+							tableData.push(tableHeaders);
+
+							// Iterate over the table rows and add data
+							const tableRows = document
+									.querySelectorAll('#insurancePolicyTable tbody tr');
+							tableRows.forEach(function(row) {
+								const rowData = [];
+								row.querySelectorAll('td').forEach(
+										function(cell) {
+											rowData.push(cell.innerText);
+										});
+								tableData.push(rowData);
+							});
+
+							// Create the PDF document definition
+							const pdfDefinition = {
+								content : [ {
+									text : "Insurance Policies",
+									style : "header"
+								}, {
+									table : {
+										headerRows : 1,
+										body : tableData
+									}
+								} ],
+								styles : {
+									header : {
+										fontSize : 18,
+										bold : true,
+										margin : [ 0, 0, 0, 10 ]
+									}
+								}
+							};
+
+							// Generate and download the PDF
+							pdfMake.createPdf(pdfDefinition).download(
+									'insurance_policy_data.pdf');
+						});
+	</script>
+</body>
+</html>

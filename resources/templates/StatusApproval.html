@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<title>Approval Policy List</title>
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- DataTables CSS -->
+<link rel="stylesheet"
+    href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<!-- DataTables JS -->
+<script
+    src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<!-- DataTables Buttons CSS -->
+<link rel="stylesheet"
+    href="https://cdn.datatables.net/buttons/2.1.3/css/buttons.dataTables.min.css">
+<!-- DataTables Buttons JS -->
+<script
+    src="https://cdn.datatables.net/buttons/2.1.3/js/dataTables.buttons.min.js"></script>
+<!-- DataTables JSZip JS -->
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<!-- DataTables Buttons HTML5 Export JS -->
+<script
+    src="https://cdn.datatables.net/buttons/2.1.3/js/buttons.html5.min.js"></script>
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
+<style>
+/* Style for the navigation bar */
+.navbar {
+    background-color: #007BFF;
+    /* Change this color to your preferred background color */
+    color: #fff; /* Text color for links */
+}
+
+/* Style for navigation links */
+.navbar .nav-link {
+    color: #fff; /* Text color for links in the navigation bar */
+}
+
+/* Hover effect for navigation links */
+.navbar .nav-link:hover {
+    color: #f8f9fa; /* Text color on hover */
+}
+
+.container-fluid {
+    width: 100%;
+    background-color: #f4f4f4;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Style for the table header */
+#table thead {
+    background-color: #343a40; /* Dark grey background for table header */
+    color: white; /* Text color for table header */
+}
+
+/* Style for alternate row colors */
+#table tbody tr:nth-child(even) {
+    background-color: #f2f2f2; /* Light grey for even rows */
+}
+
+#table tbody tr:nth-child(odd) {
+    background-color: #ffffff; /* White for odd rows */
+}
+</style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarNav" aria-controls="navbarNav"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <div>&#8801;</div>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link"
+                        th:href="@{/getpolicy}">View Policies</a></li>
+                    <li class="nav-item"><a class="nav-link"
+                        th:href="@{/insertPolicyForm}">Create Policy</a></li>
+                    <li class="nav-item"><a class="nav-link"
+                        th:href="@{/getpolicySchedule}">View Schedule</a></li>
+                    <li class="nav-item"><a class="nav-link"
+                        th:href="@{/updatepolicy}">Policy Approval</a></li>
+                    <li class="nav-item"><a class="nav-link"
+                        th:href="@{/StatusPaymentById}">Tracking</a></li>
+                    <li class="nav-item"><a class="nav-link"
+                        th:href="@{/link}">Home</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h2>Insurance Policy List</h2>
+            </div>
+        </div>
+        <div class="row table-container">
+            <div class="col-md-12">
+                <table class="table table-bordered" id="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Customer ID</th>
+                            <th>Creation Date</th>
+                            <th>Sum Assured</th>
+                            <th>Applicable Date</th>
+                            <th>No of members Insured</th>
+                            <th>Insurance package ID</th>
+                            <th>Yearly Premium Amount</th>
+                            <th>Payment Mode Count</th>
+                            <th>Expiration Date</th>
+                            <th>Agent ID</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Use Thymeleaf syntax for data binding -->
+                        <tr th:each="policy : ${policies}">
+                            <td th:text="${policy.iplc_id}"></td>
+                            <td th:text="${policy.iplc_cust_id}"></td>
+                            <td th:text="${policy.iplc_cdate}"></td>
+                            <td th:text="${policy.iplc_sum_assured}"></td>
+                            <td th:text="${policy.iplc_applicable_date}"></td>
+                            <td th:text="${policy.iplc_nom_insured}"></td>
+                            <td th:text="${policy.iplc_insp_id}"></td>
+                            <td th:text="${policy.iplc_yrly_prem_amount}"></td>
+                            <td th:text="${policy.iplc_paymode_count}"></td>
+                            <td th:text="${policy.iplc_expdate}"></td>
+                            <td th:text="${policy.iplc_agnt_id}"></td>
+                            <td th:text="${policy.iplc_status}"></td>
+                            <td>
+                                <button type="button" 
+                                    th:if="${policy.iplc_status} != 'approved'" class="btn btn-success custom-button" th:onclick="'javascript:editPolicy(' + ${policy.iplc_id} + ', \'approved\')'">Approve</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <button type="button" class="btn btn-primary mr-2"
+                    id="downloadExcelButton">Download Excel</button>
+                <button type="button" class="btn btn-primary"
+                    id="downloadPDFButton">Download PDF</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 text-center"> <a href="/link" class="btn btn-primary mt-3">Back To Policy Home</a></div>
+    <script th:inline="javascript">
+        function editPolicy(id, status) {
+
+            var urlWithParams = '/UpdatestatusPolicy?iplc_id=' + id
+                    + '&iplc_status=' + status;
+
+            window.location.href = urlWithParams;
+        }
+
+        // Initialize DataTables
+        $(document).ready(function() {
+            var table = $('#table').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: 'Download Excel',
+                        exportOptions: {
+                            columns: ':not(:last-child)'
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: 'Download PDF',
+                        exportOptions: {
+                            columns: ':not(:last-child)'
+                        }
+                    }
+                ]
+            });
+        });
+    </script>
+</body>
+
+</html>

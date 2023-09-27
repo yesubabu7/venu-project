@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Policy</title>
+
+    <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Style for the navigation bar */
+        .navbar {
+            background-color: #007BFF; /* Change this color to your preferred background color */
+            color: #fff; /* Text color for links */
+        }
+
+        /* Style for navigation links */
+        .navbar .nav-link {
+            color: #fff; /* Text color for links in the navigation bar */
+        }
+
+        /* Hover effect for navigation links */
+        .navbar .nav-link:hover {
+            color: #f8f9fa; /* Text color on hover */
+        }
+        /* Background color for the entire webpage */
+        body {
+            background-color: #B4B4B3; /* Change this color to your preferred background color */
+        }
+
+        /* Background color for cards */
+        .card {
+            background-color: #f0f0f0; /* Change this color to your preferred card background color */
+            border-radius: 10px; /* Add some border-radius for a nice look */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a shadow to the cards */
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <div>&#8801;</div>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/getpolicy}">View Policies</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/insertPolicyForm}">Create Policy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/getpolicySchedule}">View Schedule</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/updatepolicy}">Policy Approval</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/StatusPaymentById}">Tracking</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="mt-5  text-center">Policy Home Page</h1><br><br>
+        <div class="row">
+            <!-- Card for View Policies -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">View Policies</h5>
+                        <p class="card-text">View  policies.</p>
+                        <a th:href="@{/getpolicy}" class="btn btn-primary">Go to View Policies</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card for Create Policy -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Create Policy</h5>
+                        <p class="card-text">Create a new insurance policy.</p>
+                        <a th:href="@{/insertPolicyForm}" class="btn btn-primary">Go to Create Policy</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card for View Schedule -->
+  <div class="col-md-4">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">View Schedule</h5>
+            <p class="card-text">View insurance policy schedules.</p>
+            <a th:href="@{/getpolicySchedule}" class="btn btn-primary">View All Schedule</a><br><br>
+            <a th:href="@{/ScheduleById}" class="btn btn-success">View All Schedule By Id</a>
+        </div>
+    </div>
+</div>
+
+            <!-- Card for Policy Approval -->
+            <div class="col-md-4 mt-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Policy Approval</h5>
+                        <p class="card-text">Approve insurance policies.</p>
+                        <a th:href="@{/updatepolicy}" class="btn btn-primary">Go to Policy Approval</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card for Tracking -->
+            <div class="col-md-4 mt-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Tracking</h5>
+                        <p class="card-text">Track policy status and payments.</p>
+                        <a th:href="@{/StatusPaymentById}" class="btn btn-primary">Go to Tracking</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Bootstrap JS scripts (optional) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

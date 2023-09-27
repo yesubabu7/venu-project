@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Display Insurance Policy Schedules With Id</title>
+<!-- Include Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css"
+	href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+<!-- jQuery library -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- DataTables JS -->
+<script
+	src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<!-- SheetJS Library for Excel export -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+<!-- pdfmake Library for PDF generation -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
+<style>
+/* Improved styling */
+body {
+	background-color: #f4f4f4;
+	font-family: Arial, sans-serif;
+}
+
+.container-fluid {
+	width: 92%;
+	background-color: #fff;
+	padding: 20px;
+	border-radius: 5px;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+	color: #333;
+}
+
+#insurancePolicyScheduleTable {
+	width: 100%;
+}
+
+#insurancePolicyScheduleTable th, #insurancePolicyScheduleTable td {
+	text-align: center;
+	vertical-align: middle;
+}
+
+.navbar {
+	background-color: #007BFF;
+	color: #fff;
+}
+
+.navbar .nav-link {
+	color: #fff;
+}
+
+.navbar .nav-link:hover {
+	color: #f8f9fa;
+}
+
+#insurancePolicyScheduleTable tbody tr:nth-child(even) {
+	background-color: #f4f4f4;
+}
+
+#insurancePolicyScheduleTable tbody tr:nth-child(odd) {
+	background-color: #fff;
+}
+
+#insurancePolicyScheduleTable thead th {
+	background-color: #343a40;
+	color: #fff;
+}
+</style>
+</head>
+<body>
+
+	<div class=".container-fluid mt-1 mb-5 ml-5 mr-5">
+		<!-- Navbar -->
+		<nav class="navbar navbar-expand-lg">
+			<div class="container">
+				<a class="navbar-brand" href="#"></a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse"
+					data-target="#navbarNav" aria-controls="navbarNav"
+					aria-expanded="false" aria-label="Toggle navigation">
+					<div>&#8801;</div>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarNav">
+					<ul class="navbar-nav ml-auto">
+						<li class="nav-item"><a class="nav-link"
+							th:href="@{/getpolicy}">View Policies</a></li>
+						<li class="nav-item"><a class="nav-link"
+							th:href="@{/insertPolicyForm}">Create Policy</a></li>
+						<li class="nav-item"><a class="nav-link"
+							th:href="@{/getpolicySchedule}">View Schedule</a></li>
+						<li class="nav-item"><a class="nav-link"
+							th:href="@{/updatepolicy}">Policy Approval</a></li>
+						<li class="nav-item"><a class="nav-link"
+							th:href="@{/StatusPaymentById}">Tracking</a></li>
+						<li class="nav-item"><a class="nav-link" th:href="@{/link}">Home</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<br>
+		<h1 class="text-center">Insurance Policy Schedules</h1>
+
+		<table id="insurancePolicyScheduleTable"
+			class="table table-striped table-bordered mt-4">
+			<thead>
+				<tr>
+					<th>Policy ID</th>
+					<th>Schedule Index</th>
+					<th>Schedule Date</th>
+					<th>Premium Amount</th>
+					<th>Paid Date</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- Use Thymeleaf syntax for data binding -->
+				<tr th:each="schedule : ${schedules}">
+					<td th:text="${schedule.iplcId}"></td>
+					<td th:text="${schedule.iplcSindex}"></td>
+					<td th:text="${schedule.iplcDate}"></td>
+					<td th:text="${schedule.iplcPremium}"></td>
+					<td th:text="${schedule.iplcPaidDate}"></td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="col-md-12 text-center">
+			<button class="btn btn-success" id="downloadExcelButton">Download
+				Excel</button>
+			<button class="btn btn-success ml-2" id="downloadPDFButton">Download
+				PDF</button>
+		</div>
+		<div class="col-md-12 text-center">
+			<a href="/link" class="btn btn-primary mt-3">Back To Policy Home</a>
+		</div>
+	</div>
+
+	<script>
+		$(document).ready(function() {
+			$('#insurancePolicyScheduleTable').DataTable();
+		});
+	</script>
+	<!-- JavaScript for downloading Excel using SheetJS -->
+	<script>
+		document.getElementById('downloadExcelButton').addEventListener(
+				'click',
+				function() {
+					// Select the table by its id
+					const table = document
+							.getElementById('insurancePolicyScheduleTable');
+					// Convert the table data to a worksheet
+					const ws = XLSX.utils.table_to_sheet(table);
+					// Create a new workbook and add the worksheet
+					const wb = XLSX.utils.book_new();
+					XLSX.utils.book_append_sheet(wb, ws,
+							'Policy Schedules Data');
+					// Generate and download the Excel file
+					XLSX.writeFile(wb, 'policy_schedules_data.xlsx');
+				});
+	</script>
+	<!-- JavaScript for downloading PDF using pdfmake -->
+	<script>
+		document
+				.getElementById('downloadPDFButton')
+				.addEventListener(
+						'click',
+						function() {
+							// Define the table data
+							const tableData = [];
+							const tableHeaders = [ "Policy ID",
+									"Schedule Index", "Schedule Date",
+									"Premium Amount", "Paid Date" ];
+							// Add table headers
+							tableData.push(tableHeaders);
+							// Iterate over the table rows and add data
+							const tableRows = document
+									.querySelectorAll('#insurancePolicyScheduleTable tbody tr');
+							tableRows.forEach(function(row) {
+								const rowData = [];
+								row.querySelectorAll('td').forEach(
+										function(cell) {
+											rowData.push(cell.innerText);
+										});
+								tableData.push(rowData);
+							});
+							// Create the PDF document definition
+							const pdfDefinition = {
+								content : [ {
+									text : "Insurance Policy Schedules",
+									style : "header"
+								}, {
+									table : {
+										headerRows : 1,
+										body : tableData
+									}
+								} ],
+								styles : {
+									header : {
+										fontSize : 18,
+										bold : true,
+										margin : [ 0, 0, 0, 10 ]
+									}
+								}
+							};
+							// Generate and download the PDF
+							pdfMake.createPdf(pdfDefinition).download(
+									'policy_schedules_data.pdf');
+						});
+	</script>
+</body>
+</html>

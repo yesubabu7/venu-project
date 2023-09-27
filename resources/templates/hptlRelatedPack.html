@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Packages List</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <input type="hidden" th:value="${hospid}" id="hospid">
+    <div class="container mt-5">
+        <h1>Insurance Packages Entry</h1><br>
+        <h3>Add New Insurance Package</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Range Start</th>
+                    <th>Range End</th>
+                    <th>Age Limit Start</th>
+                    <th>Age Limit End</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" id="titleVal" class="form-control" value=""></td>
+                    <td><input type="text" id="descVal" class="form-control" value=""></td>
+                    <td><input type="text" id="statusVal" class="form-control" value=""></td>
+                    <td><input type="number" id="rangeStartVal" class="form-control" value=""></td>
+                    <td><input type="number" id="rangeEndVal" class="form-control" value=""></td>
+                    <td><input type="number" id="ageLimitStartVal" class="form-control" value=""></td>
+                    <td><input type="number" id="ageLimitEndVal" class="form-control" value=""></td>
+                    <td><button onclick="addNewPackage()" class="btn btn-primary">Save</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <h3>Insurance Packages List</h3><br>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Range Start</th>
+                    <th>Range End</th>
+                    <th>Age Limit Start</th>
+                    <th>Age Limit End</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="package : ${packages}">
+                    <td th:text="${package.inspId}"></td>
+                    <td th:text="${package.inspTitle}"></td>
+                    <td th:text="${package.inspDescription}"></td>
+                    <td th:text="${package.inspStatus}"></td>
+                    <td th:text="${package.inspRangeStart}"></td>
+                    <td th:text="${package.inspRangeEnd}"></td>
+                    <td th:text="${package.inspAgeLimitStart}"></td>
+                    <td th:text="${package.inspAgeLimitEnd}"></td>
+                    <td>
+                        <button th:onclick="editPackage(this)" class="btn btn-success">Edit</button>
+                        <button th:onclick="deletePackage(this)" class="btn btn-danger">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function addNewPackage() {
+            var title = document.getElementById("titleVal").value;
+            var desc = document.getElementById("descVal").value;
+            var status = document.getElementById("statusVal").value;
+            var rangeStart = document.getElementById("rangeStartVal").value;
+            var rangeEnd = document.getElementById("rangeEndVal").value;
+            var ageLimitStart = document.getElementById("ageLimitStartVal").value;
+            var ageLimitEnd = document.getElementById("ageLimitEndVal").value;
+            var hospid = document.getElementById("hospid").value;
+            
+            $.ajax({
+                url: "/addPackage?title=" + encodeURIComponent(title) + "&desc=" + encodeURIComponent(desc) +
+                    "&status=" + encodeURIComponent(status) + "&rangeStart=" + rangeStart + "&rangeEnd=" + rangeEnd +
+                    "&ageLimitStart=" + ageLimitStart + "&ageLimitEnd=" + ageLimitEnd + "&hospid=" + encodeURIComponent(hospid),
+                method: "POST",
+                success: function (message) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error Occured: ", status, error);
+                }
+            });
+        }
+       
+        
+		function deletePackage(buttonElement) {
+			
+			var parentRow = buttonElement.parentNode.parentNode;
+			var did = parentRow.cells[0].textContent;
+			var hospid = document.getElementById("hospid").value;
+			
+			
+			$.ajax({
+				url : "/deletePackages?did=" + did + "&hospid=" + encodeURIComponent(hospid),
+				method : "POST",
+				success : function(message){
+					//window.alert(message);
+					location.reload();
+				},
+				error : function(xhr, status, error){
+					console.error("Error Occured: ", status, error);
+				}
+			});
+		}
+		
+		
+		function editPackage(buttonElement) {
+			var parentRow = buttonElement.parentNode.parentNode;
+
+			var Id = parentRow.cells[0].textContent;
+			var title = parentRow.cells[1].textContent;
+			var desc = parentRow.cells[2].textContent;
+			var status = parentRow.cells[3].textContent;
+			var rangeStart = parentRow.cells[4].textContent;
+			var rangeEnd = parentRow.cells[5].textContent;
+			var ageLimitStrt = parentRow.cells[6].textContent;
+			var ageLimitEnd = parentRow.cells[7].textContent;
+
+			parentRow.removeChild(parentRow.cells[1]); // Remove cell 2 again to adjust for removed cell
+			parentRow.removeChild(parentRow.cells[1]); // Remove cell 3
+			parentRow.removeChild(parentRow.cells[1]); // Remove cell 4
+			parentRow.removeChild(parentRow.cells[1]); // Remove cell 5
+			parentRow.removeChild(parentRow.cells[1]);
+			parentRow.removeChild(parentRow.cells[1]);
+			parentRow.removeChild(parentRow.cells[1]);
+			parentRow.removeChild(parentRow.cells[1]);
+
+			var cell2 = document.createElement("td");
+			var cell21 = document.createElement("input");
+			cell21.setAttribute("id", "title");
+			cell21.setAttribute("name", "title");
+			cell21.setAttribute("value", title);
+			cell21.setAttribute("class", "form-control");
+			cell2.appendChild(cell21);
+
+			var cell3 = document.createElement("td");
+			var cell31 = document.createElement("input");
+			cell31.setAttribute("id", "Description");
+			cell31.setAttribute("name", "Description");
+			cell31.setAttribute("value", desc);
+			cell31.setAttribute("class", "form-control");
+			cell3.appendChild(cell31);
+
+			var cell4 = document.createElement("td");
+			var cell41 = document.createElement("input");
+			cell41.setAttribute("id", "status");
+			cell41.setAttribute("name", "status");
+			cell41.setAttribute("value", status);
+			cell41.setAttribute("class", "form-control");
+			cell4.appendChild(cell41);
+			
+			var cell5 = document.createElement("td");
+			var cell51 = document.createElement("input");
+			cell51.setAttribute("id", "rangeStart");
+			cell51.setAttribute("name", "rangeStart");
+			cell51.setAttribute("value", rangeStart);
+			cell51.setAttribute("class", "form-control");
+			cell5.appendChild(cell51);
+			
+			var cell6 = document.createElement("td");
+			var cell61 = document.createElement("input");
+			cell61.setAttribute("id", "rangeEnd");
+			cell61.setAttribute("name", "rangeEnd");
+			cell61.setAttribute("value", rangeEnd);
+			cell61.setAttribute("class", "form-control");
+			cell6.appendChild(cell61);
+			
+			var cell7 = document.createElement("td");
+			var cell71 = document.createElement("input");
+			cell71.setAttribute("id", "ageLimitStrt");
+			cell71.setAttribute("name", "ageLimitStrt");
+			cell71.setAttribute("value", ageLimitStrt);
+			cell71.setAttribute("class", "form-control");
+			cell7.appendChild(cell71);
+			
+			var cell8 = document.createElement("td");
+			var cell81 = document.createElement("input");
+			cell81.setAttribute("id", "ageLimitEnd");
+			cell81.setAttribute("name", "ageLimitEnd");
+			cell81.setAttribute("value", ageLimitEnd);
+			cell81.setAttribute("class", "form-control");
+			cell8.appendChild(cell81);
+			
+			var cell9 = document.createElement("td");
+			cell9.innerHTML = `
+				<button onclick="savePackage(this)" class="edit-button btn btn-primary">Save</button>
+				<button onclick="deletePackage(this)" class="delete-button btn btn-danger">Delete</button>
+			`;
+
+			parentRow.appendChild(cell2);
+			parentRow.appendChild(cell3);
+			parentRow.appendChild(cell4);
+			parentRow.appendChild(cell5);
+			parentRow.appendChild(cell6);
+			parentRow.appendChild(cell7);
+			parentRow.appendChild(cell8);
+			parentRow.appendChild(cell9);
+		}
+		
+		function savePackage(buttonElement){
+			var parentRow = buttonElement.parentNode.parentNode;
+			var Id = parentRow.cells[0].textContent;
+			
+			var title = parentRow.cells[1].firstChild.value;
+			var desc = parentRow.cells[2].firstChild.value;
+			var status = parentRow.cells[3].firstChild.value;
+			var rangeStart = parentRow.cells[4].firstChild.value;
+			var rangeEnd = parentRow.cells[5].firstChild.value;
+			var ageLimitStrt = parentRow.cells[6].firstChild.value;
+			var ageLimitEnd = parentRow.cells[7].firstChild.value;
+			
+			$.ajax({
+				url : "/editPackage?Id=" + Id + "&title=" + title + "&Description=" + desc +  "&status=" + status +  "&rangeStart=" + rangeStart +  "&rangeEnd=" + rangeEnd +  "&ageLimitStrt=" + ageLimitStrt + "&ageLimitEnd=" + ageLimitEnd,
+				method : "POST",
+				success : function(message){
+					window.location.href = window.location.href;
+				},
+				error : function(xhr, status, error){
+					console.error("Error Occured: ", status, error);
+				}
+			});
+		}
+    </script>
+</body>
+
+</html>

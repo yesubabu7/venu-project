@@ -1,0 +1,29 @@
+//tracking of ip address
+
+public class SuspiciousURLFilter implements Filter {
+
+        @Override
+        public void destroy() {
+        }
+
+        @Override
+        public void doFilter(ServletRequest request, ServletResponse response,
+                FilterChain filterChain) throws IOException, ServletException {
+
+            HttpServletRequest httpRequest = (HttpServletRequest) request;
+            String requestURI = httpRequest.getRequestURI();
+
+            if (requestURI.endsWith(".exe")) {
+
+                HttpServletResponse httpResponse = (HttpServletResponse) response;
+                            //send error or maybe redirect to some error page
+                            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            }
+
+            filterChain.doFilter(request, response);
+        }
+
+        @Override
+        public void init(FilterConfig config) throws ServletException {
+        }
+    }

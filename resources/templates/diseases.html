@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Disease Names</title>
+    
+    
+</head>
+<body>
+<input type="checkbox" id="check">
+    <header style="padding-top: 20px;">
+        <label for="check">
+            <i class="fas fa-bars" id="sidebar_btn"></i>
+        </label>
+        <div class="left_area">
+            <h3>Health Insurance Management</h3>
+        </div>
+    </header>
+    <div class="sidebar" style="margin-top: 50px;">
+        <center>
+            <img src="https://images.freeimages.com/fic/images/icons/2526/bloggers/256/admin.png" class="profile_image" alt="">
+            <h4>Admin</h4>
+        </center>
+        <a th:href="@{/dashboard}"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+        <a th:href="@{/getCustomers}"><i class="fas fa-users"></i><span>Customer</span></a>
+        <a th:href="@{/hospitals}"><i class="fas fa-list-alt"></i><span>Hospitals</span></a>
+        <a th:href="@{/list}"><i class="fab fa-product-hunt"></i><span>Policy</span></a>
+        <a th:href="@{/admin-question}"><i class="fas fa-question-circle"></i><span>Questions</span></a>
+        <a th:href="@{/getPayments}"><i class="fas fa-question-circle"></i><span>Payment Section</span></a>
+    </div>
+    <h1>List of Disease Names</h1>
+       <TABLE BORDER="1">
+      <TR>
+      <TH>disease id</TH>
+      <TH>Name</TH>
+      <TH>disease description</TH>
+      <TH>disease icd code</TH>
+      <th>disease status</th>
+      </TR>
+      
+      <tr th:each="dsc : ${diseaseslist}">
+    <td class="align-middle" th:text="${dsc.discId}">[${dsc.discId}]</td>
+    <td class="align-middle" th:text="${dsc.discName}">[${dsc.discName}]</td>
+    <td class="align-middle" th:text="${dsc.discIcdCode}">[${dsc.discIcdCode}]</td>
+    <td class="align-middle" th:text="${dsc.discDesc}">[${dsc.discDesc}]</td>
+    <td class="align-middle" th:text="${dsc.discStatus}">[${dsc.discStatus}]</td>
+</tr>
+     </TABLE>
+     	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery -->
+     <script th:inline="javascript">
+        $(document).ready(function() {
+            // Retrieve the packageId from the query string
+            var queryString = /*[[${#httpServletRequest.getQueryString()}]]*/ "";
+            var searchParams = new URLSearchParams(queryString);
+            var packageId = searchParams.get("packageId");
+
+            // Make an AJAX call to fetch disease data for the specified packageId
+            $.ajax({
+				type: 'GET',
+                url: 'showDiseases', 
+                
+                data:{
+					packageId:packageId
+				},
+                success: function(data) {
+                    // Handle the data and update the table as needed
+                    console.log("Disease data received:", data);
+                    // You can use data to update the disease table
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching disease data:", error);
+                }
+            });
+        });
+        
+       
+        const check = document.getElementById('check');
+        const sidebar = document.querySelector('.sidebar');
+
+        check.addEventListener('change', () => {
+            if (check.checked) {
+                sidebar.style.left = '0';
+            } else {
+                sidebar.style.left = '-250px';
+            }
+        });
+    </script>
+    </script>
+</body>
+</html>

@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+
+	<meta charset="utf-8">
+	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+
+	<style media="screen">
+		a:link {
+			text-decoration: none;
+		}
+
+		h1 {
+			text-align: center;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin: 0 auto;
+		}
+
+		th,
+		td {
+			border: 1px solid #ddd;
+			padding: 8px;
+			text-align: left;
+		}
+
+		th {
+			background-color: #f2f2f2;
+		}
+
+		tr:nth-child(even) {
+			background-color: #f2f2f2;
+		}
+
+		tr:hover {
+			background-color: #ddd;
+		}
+
+		.container {
+			margin-top: 50px;
+			text-align: center;
+		}
+
+		#showFormButton {
+			padding: 10px 20px;
+			background-color: #22242A;
+			color: #fff;
+			border: none;
+			cursor: pointer;
+			margin-bottom: 20px;
+		}
+
+		#showEditFormButton {
+			padding: 10px 20px;
+			background-color: #22242A;
+			color: #fff;
+			border: none;
+			cursor: pointer;
+			margin-bottom: 20px;
+		}
+
+
+		#showFormButton:hover {
+			background-color: #22242A;
+		}
+
+		#showEditFormButton:hover {
+			background-color: #22242A;
+		}
+
+		form {
+			margin-top: 20px;
+			padding: 20px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			background-color: #f7f7f7;
+			width: 300px;
+			margin: 0 auto;
+			display: none;
+		}
+
+		label {
+			display: block;
+			font-weight: bold;
+			margin-bottom: 5px;
+		}
+
+		input[type="text"],
+		input[type="number"] {
+			width: 90%;
+			padding: 10px;
+			margin-bottom: 10px;
+			border: 1px solid #ccc;
+			border-radius: 3px;
+			font-size: 14px;
+		}
+
+		input[type="submit"] {
+			background-color: #22242A;
+			color: #fff;
+			border: none;
+			padding: 10px 20px;
+			border-radius: 3px;
+			cursor: pointer;
+		}
+
+		input[type="submit"]:hover {
+			background-color: #0056b3;
+		}
+
+		.delete-button {
+			color: red;
+		}
+
+		.add-button-container {
+			text-align: right;
+			margin-bottom: 20px;
+		}
+
+		.edit-button-container {
+			text-align: right;
+			margin-bottom: 20px;
+		}
+		  .left_area h3 {
+            color: #fff;
+            margin: 0 auto;
+            text-transform: uppercase;
+            font-size: 22px;
+            font-weight: 900;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .left_area span {
+            color: #19B3D3;
+        }
+
+        .sidebar {
+            background: #2f323a;
+            margin-top: 70px;
+            padding-top: 30px;
+            position: fixed;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            transition: 0.5s;
+            transition-property: left;
+        }
+
+        .sidebar .profile_image {
+            width: 100px;
+            height: 100px;
+            border-radius: 100px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar h4 {
+            color: #ccc;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            color: #fff;
+            display: block;
+            width: 100%;
+            line-height: 60px;
+            text-decoration: none;
+            padding-left: 40px;
+            box-sizing: border-box;
+            transition: 0.5s;
+        }
+
+        .card-wrapper {
+            margin: 10px auto;
+            text-align: center;
+            width: 250px;
+        }
+
+        .sidebar a:hover {
+            background: #19B3D3;
+        }
+
+        .sidebar i {
+            padding-right: 10px;
+        }
+
+        label #sidebar_btn {
+            z-index: 1;
+            color: #fff;
+            position: fixed;
+            cursor: pointer;
+            left: 20px;
+            padding-left: 30px;
+            font-size: 20px;
+            margin: 5px 0;
+            transition: 0.5s;
+            transition-property: color;
+            margin-top: 17px;
+        }
+        
+
+        label #sidebar_btn:hover {
+            color: #19B3D3;
+        }
+
+        #check:checked~.sidebar {
+            left: 0;
+        }
+
+        #check:checked~.content {
+            margin-left: 250px;
+        }
+
+        #check {
+            display: none;
+        }
+		#searchform{
+		display:block;
+		}
+		#anchor {
+        display: inline-block;
+        padding: 10px 20px; /* Adjust padding as needed */
+        background-color: #4c4c52; /* Button background color */
+        color: #fff; /* Text color */
+        text-decoration: none; /* Remove underlines */
+        border: none; /* Remove borders */
+        border-radius: 5px; /* Rounded corners */
+        cursor: pointer; /* Add a pointer cursor on hover */
+    }
+
+    /* Style the anchor when hovered */
+    #anchor:hover {
+        background-color: #0056b3; /* Change background color on hover */
+    }
+		 .pagination {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+        }
+
+        .pagination li {
+            margin: 0 5px;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            background-color: #007bff;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+
+        .pagination a:hover {
+            background-color: #0056b3;
+        }
+        #prevPage,#nextPage{
+         background-color: #4c4c52; 
+        }
+	</style>
+</head>
+
+<body>
+	<form action="searchbyname" method="get">
+			
+			
+		</form>
+	
+	<div class="container">
+
+		<!-- to add a hospital -->
+
+		<div class="add-button-container">
+			<button id="showFormButton">Add Hospital</button>
+		</div>
+		<form id="searchform" action="searchbyname" method="get"><label>search by name:</label> <input type="text" name="search"><br> <input type="submit" value="submit"></form>
+<br><a id="anchor" href="hospitals">All Hospitals</a>
+		<br><br>
+		<!-- add form -->
+		<form id="myForm" action="addhospital" method="post">
+			<h2>Add Hospital</h2>
+
+			<label for="hospTitle">Hospital Title:</label>
+			<input type="text" id="hospTitle" name="hospTitle" required /><br><br>
+
+			<label for="hospLocation">Location:</label>
+			<input type="text" id="hospLocation" name="hospLocation" required /><br><br>
+
+			<label for="hospAddress">Address:</label>
+			<input type="text" id="hospAddress" name="hospAddress" required /><br><br>
+
+			<label for="hospContactNumber">Contact Number:</label>
+			<input type="text" id="hospContactNumber" name="hospContactNumber" required /><br><br>
+
+			<label for="hospPincode">Pincode:</label>
+			<input type="text" id="hospPincode" name="hospPincode" required /><br><br>
+
+			<label for="hospGrade">Grade:</label>
+			<input type="text" id="hospGrade" name="grade" required /><br><br>
+
+			<label for="hospFacilities">Facilities:</label>
+			<input type="text" id="hospFacilities" name="facilities" required /><br><br>
+
+
+
+			<input type="button" value="Submit" id="submit"/>
+		</form>
+
+		<!-- edit form -->
+
+		<br><br>
+
+
+		<!-- to display hospitals table -->
+
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h6 class="panel-title"> List Of Hospitals</h6>
+			</div>
+			<table class="table table-hover" id="dev-table">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Title</th>
+						<th>Location</th>
+						<th>Address</th>
+						<th>Contact Number</th>
+						<th>Pincode</th>
+						<th>Grade</th>
+						<th>Facilities</th>
+						<th>LU Date</th>
+						<th>view packages</th>
+						<th>edit</th>
+						<th>Delete</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- Replace this section with Thymeleaf iteration -->
+					<tr th:each="hospital : ${hospitals}">
+						<td id="hospId" th:text="${hospital.hospId}"></td>
+						<td th:text="${hospital.hospTitle}"></td>
+						<td th:text="${hospital.hospLocation}"></td>
+						<td th:text="${hospital.hospAddress}"></td>
+						<td th:text="${hospital.hospContactNumber}"></td>
+						<td th:text="${hospital.hospPincode}"></td>
+						<td th:text="${hospital.grade}"></td>
+						<td th:text="${hospital.facilities}"></td>
+						<td th:text="${hospital.hospLuudate}"></td>
+						<td>
+							<!-- Add a button to view packages -->
+							<button class="btn btn-primary view-packages-button"
+								th:onclick="'showPackages(' + ${hospital.hospId} + ')'"
+								th:attr="data-hospital-id=${hospital.hospId}">View Packages</button>
+						</td>
+						<td>
+							<button th:onclick="editHospital(this)" class="btn btn-success">Edit</button>
+
+						</td>
+						<td>
+							<!-- Add a delete button with a data attribute for hospitalId -->
+							<span class="glyphicon glyphicon-trash delete-button"
+								th:attr="data-hospital-id=${hospital.hospId}"></span>
+						</td>
+					</tr>
+					<!-- End of Thymeleaf iteration -->
+				</tbody>
+			</table>
+		</div>
+	</div>
+ <ul class="pagination" id="pagination">
+        <li><a href="#" id="prevPage">&laquo; Previous</a></li>
+        <li><a href="#" id="nextPage">Next &raquo;</a></li>
+    </ul>
+
+
+
+	<!-- function for deleting a hospital -->
+	<script>
+		$(document).ready(function () {
+			
+			$('.delete-button').on('click', function () {
+				var hospitalId = $(this).data('hospital-id');
+				var button = this;
+				console.log(hospitalId);
+				$.ajax({
+					type: 'POST',
+					url: '/deleteHospital', // Change this to your controller endpoint
+					data: {hospitalId: hospitalId},
+					success: function (response) {
+						console.log("yes");
+						$(button).closest('tr').remove();
+						// Handle the success response as needed
+						// For example, you can remove the deleted row from the table.
+						alert(response);
+						// Remove the row from the table
+					},
+					error: function () {
+						alert('Error deleting hospital');
+					}
+				});
+			});
+			
+			 $("#submit").click(function () {
+		            // Get form data
+		            var formData = {
+		                hospTitle: $("#hospTitle").val(),
+		                hospLocation: $("#hospLocation").val(),
+		                hospAddress: $("#hospAddress").val(),
+		                hospContactNumber: $("#hospContactNumber").val(),
+		                hospPincode: $("#hospPincode").val(),
+		                grade: $("#hospGrade").val(),
+		                facilities: $("#hospFacilities").val()
+		            };
+					console.log(formData);
+		            // Make a POST request using AJAX
+		            $.ajax({
+		                type: 'POST',
+		                url: '/addhospital', // Replace with your server endpoint
+		                data: JSON.stringify(formData), // Convert data to JSON
+		                contentType: 'application/json', // Set content type to JSON
+		                success: function (response) {
+		                    // Handle the success response as needed
+		                    alert('Form submitted successfully!');
+		                },
+		                error: function () {
+		                    // Handle errors here
+		                    alert('Error submitting form');
+		                }
+		            });
+		        });
+
+
+			document.getElementById("showFormButton").addEventListener("click", function () {
+				var form = document.getElementById("myForm");
+				var editForm = document.getElementById("editForm");
+				if (form.style.display === "none" || form.style.display === "") {
+					form.style.display = "block";
+					form.querySelector("h2").style.display = "block";
+					editForm.style.display = "none";
+				} else {
+					form.style.display = "none";
+				}
+			});
+
+
+
+
+			setTimeout(function () {
+				var messageContainer = document.getElementById("messageContainer");
+				if (messageContainer) {
+					messageContainer.style.display = "none";
+				}
+			}, 5000);
+			
+			var rowsPerPage = 10; // Change this as needed
+            var currentPage = 1;
+
+            // Function to update the table based on the current page
+            function updateTable() {
+                var rows = $("#dev-table tbody tr");
+                var totalPages = Math.ceil(rows.length / rowsPerPage);
+
+                // Show/hide rows based on the current page
+                rows.hide();
+                var startIndex = (currentPage - 1) * rowsPerPage;
+                var endIndex = startIndex + rowsPerPage;
+                rows.slice(startIndex, endIndex).show();
+
+                // Update pagination controls
+                var pagination = $("#pagination");
+                pagination.find("#prevPage").attr("disabled", currentPage === 1);
+                pagination.find("#nextPage").attr("disabled", currentPage === totalPages);
+            }
+
+            // Initialize the table and pagination
+            updateTable();
+
+            // Handle previous page button click
+            $("#prevPage").click(function (e) {
+                e.preventDefault();
+                if (currentPage > 1) {
+                    currentPage--;
+                    updateTable();
+                }
+            });
+
+            // Handle next page button click
+            $("#nextPage").click(function (e) {
+                e.preventDefault();
+                var rows = $("#dev-table tbody tr");
+                var totalPages = Math.ceil(rows.length / rowsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updateTable();
+                }
+            });
+
+		});
+
+
+
+		function editHospital(buttonElement) {
+			var parentRow = buttonElement.parentNode.parentNode;
+
+			var hospId = parentRow.cells[0].textContent;
+			var hospTitle = parentRow.cells[1].textContent;
+			var hospLocation = parentRow.cells[2].textContent;
+			var hospAddress = parentRow.cells[3].textContent;
+			var hospContactNumber = parentRow.cells[4].textContent;
+			var hospPincode = parentRow.cells[5].textContent;
+			var grade = parentRow.cells[6].textContent;
+			var facilities = parentRow.cells[7].textContent;
+			var hospLuudate = parentRow.cells[8].textContent;
+
+			// Remove existing cells
+			parentRow.removeChild(parentRow.cells[1]); // Remove cell 2
+			parentRow.removeChild(parentRow.cells[1]); // Remove cell 3
+			parentRow.removeChild(parentRow.cells[1]); // Remove cell 4
+			parentRow.removeChild(parentRow.cells[1]); // Remove cell 5
+			parentRow.removeChild(parentRow.cells[1]); // Remove cell 6
+			parentRow.removeChild(parentRow.cells[1]); // Remove cell 7
+			parentRow.removeChild(parentRow.cells[1]);
+			parentRow.removeChild(parentRow.cells[1]);
+			parentRow.removeChild(parentRow.cells[1]);
+			parentRow.removeChild(parentRow.cells[1]);
+			parentRow.removeChild(parentRow.cells[1]); // Remove cell 8
+
+
+
+
+			// Create new cells for editing
+			var cell2 = document.createElement("td");
+			var cell21 = document.createElement("input");
+			cell21.setAttribute("id", "editHospTitle");
+			cell21.setAttribute("name", "editHospTitle");
+			cell21.setAttribute("value", hospTitle);
+			cell21.setAttribute("class", "form-control");
+			cell2.appendChild(cell21);
+
+			var cell3 = document.createElement("td");
+			var cell31 = document.createElement("input");
+			cell31.setAttribute("id", "editHospLocation");
+			cell31.setAttribute("name", "editHospLocation");
+			cell31.setAttribute("value", hospLocation);
+			cell31.setAttribute("class", "form-control");
+			cell3.appendChild(cell31);
+
+			var cell4 = document.createElement("td");
+			var cell41 = document.createElement("input");
+			cell41.setAttribute("id", "editHospAddress");
+			cell41.setAttribute("name", "editHospAddress");
+			cell41.setAttribute("value", hospAddress);
+			cell41.setAttribute("class", "form-control");
+			cell4.appendChild(cell41);
+
+			var cell5 = document.createElement("td");
+			var cell51 = document.createElement("input");
+			cell51.setAttribute("id", "editHospContactNumber");
+			cell51.setAttribute("name", "editHospContactNumber");
+			cell51.setAttribute("value", hospContactNumber);
+			cell51.setAttribute("class", "form-control");
+			cell5.appendChild(cell51);
+
+			var cell6 = document.createElement("td");
+			var cell61 = document.createElement("input");
+			cell61.setAttribute("id", "editHospPincode");
+			cell61.setAttribute("name", "editHospPincode");
+			cell61.setAttribute("value", hospPincode);
+			cell61.setAttribute("class", "form-control");
+			cell6.appendChild(cell61);
+
+			var cell7 = document.createElement("td");
+			var cell71 = document.createElement("input");
+			cell71.setAttribute("id", "editGrade");
+			cell71.setAttribute("name", "editGrade");
+			cell71.setAttribute("value", grade);
+			cell71.setAttribute("class", "form-control");
+			cell7.appendChild(cell71);
+
+			var cell8 = document.createElement("td");
+			var cell81 = document.createElement("input");
+			cell81.setAttribute("id", "editFacilities");
+			cell81.setAttribute("name", "editFacilities");
+			cell81.setAttribute("value", facilities);
+			cell81.setAttribute("class", "form-control");
+			cell8.appendChild(cell81);
+
+			var cell9 = document.createElement("td");
+			var cell91 = document.createElement("input");
+			cell91.setAttribute("id", "udate");
+			cell91.setAttribute("name", "udate");
+			cell91.setAttribute("value", hospLuudate);
+			cell91.setAttribute("class", "form-control");
+			cell9.appendChild(cell91);
+
+			var cell10 = document.createElement("td");
+			cell10.innerHTML = `
+				<button class="btn btn-primary view-packages-button"
+								th:attr="data-hospital-id=${hospId}">View Packages</button>
+			`;
+
+			// Repeat the above for other fields (address, contact number, etc.)
+
+			var cell11 = document.createElement("td");
+			cell11.innerHTML = `
+       			 <button onclick="saveHospital(this)" class="edit-button btn btn-primary">Save</button>
+   			 `;
+
+			var cell12 = document.createElement("td");
+			cell12.innerHTML = `
+				<span class="glyphicon glyphicon-trash delete-button"
+								th:attr="data-hospital-id=${hospId}"></span>
+			`;
+
+			parentRow.appendChild(cell2);
+			parentRow.appendChild(cell3);
+			parentRow.appendChild(cell4);
+			parentRow.appendChild(cell5);
+			parentRow.appendChild(cell6);
+			parentRow.appendChild(cell7);
+			parentRow.appendChild(cell8);
+			parentRow.appendChild(cell9);
+			parentRow.appendChild(cell10);
+			parentRow.appendChild(cell11);
+			parentRow.appendChild(cell12);
+		}
+
+		function showPackages(hspid) {
+			console.log(hspid);
+			var url = "/getPackages?hspid=" + hspid;
+			window.location.href = url;
+		}
+
+
+		function saveHospital(buttonElement) {
+
+			var parentRow = buttonElement.parentNode.parentNode;
+			var hospIddd = parentRow.cells[0].textContent;
+
+
+			// Get the edited hospital information from the edit form
+			var editedHospital = {
+				hospId: hospIddd,
+				hospTitle: document.getElementById("editHospTitle").value,
+				hospLocation: document.getElementById("editHospLocation").value,
+				hospAddress: document.getElementById("editHospAddress").value,
+				hospContactNumber: document.getElementById("editHospContactNumber").value,
+				hospPincode: document.getElementById("editHospPincode").value,
+				grade: document.getElementById("editGrade").value,
+				facilities: document.getElementById("editFacilities").value
+			};
+
+			$.ajax({
+				url: "/editHospital", // Replace with your server endpoint for updating hospital information
+				method: "POST",
+				data: editedHospital, // Send the edited hospital data to the server
+				success: function (message) {
+					// Reload the page after successfully updating the hospital
+					location.reload();
+					//console.log(message);
+				},
+				error: function (xhr, status, error) {
+					console.error("Error Occurred: ", status, error);
+				}
+			});
+		}
+
+
+	</script>
+</body>
+
+</html>

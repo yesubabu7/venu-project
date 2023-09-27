@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<books>
+	<book id="bk101">
+	<authors>
+		<author>Gambardella</author>
+		<author>Matthew</author>
+	</authors>
+	<title>XML Developers Guide</title>
+	<price>650</price>
+	<publishdate>2000-10-01</publishdate>
+	</book>
+	<authors>
+		<author>Rails</author>
+		<author>Kim</author>
+	</authors>
+	<title>Midnight Rain</title>
+	<price>225</price>
+	<publishdate>2000-12-16</publishdate>
+	</book>
+</books>
+	
+
+	

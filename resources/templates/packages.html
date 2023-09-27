@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+	<title>Insurance Packages List</title>
+
+	<!-- Link your CSS file -->
+	<style>
+		body {
+			padding: 10px;
+		}
+
+		header {
+			background-color: #333;
+			/* Change the background color */
+			color: #fff;
+			/* Change the text color */
+			padding: 10px;
+			/* Add some padding */
+			text-align: center;
+			/* Center-align the text */
+		}
+
+		/* Apply styles to the h1 heading */
+		h1 {
+			font-size: 24px;
+			/* Change the font size */
+			margin-bottom: 10px;
+			/* Add some spacing at the bottom */
+		}
+
+		/* Apply styles to the table */
+		table {
+			width: 98%;
+			/* Make the table take up the full width of its container */
+			border-collapse: collapse;
+			/* Collapse table borders */
+			margin: 20px;
+			/* Add margin around the table */
+		}
+
+		/* Apply styles to table header cells */
+		th {
+			background-color: #333;
+			/* Change the header background color */
+			color: #fff;
+			/* Change the header text color */
+			padding: 10px;
+			/* Add padding to header cells */
+			text-align: left;
+			/* Left-align header text */
+		}
+
+		/* Apply styles to table data cells */
+		td {
+			border: 1px solid #ddd;
+			/* Add a border to data cells */
+			padding: 8px;
+			/* Add padding to data cells */
+		}
+
+		/* Apply styles to hyperlinks */
+		a {
+			text-decoration: none;
+			/* Remove underlines from hyperlinks */
+			color: #007bff;
+			/* Change hyperlink color */
+		}
+
+		/* Apply styles to hyperlinks on hover */
+		a:hover {
+			text-decoration: underline;
+			/* Add underline on hover */
+		}
+
+		/* Apply styles to the select element */
+		select {
+			width: 100%;
+			/* Make the select element take up the full width of its container */
+			padding: 8px;
+			/* Add padding */
+			margin: 5px 0;
+			/* Add margin */
+			border: 1px solid #ddd;
+			/* Add a border */
+		}
+
+		/* Apply styles to text input fields */
+		input[type="text"] {
+			width: 100%;
+			/* Make the input field take up the full width of its container */
+			padding: 8px;
+			/* Add padding */
+			margin: 5px 0;
+			/* Add margin */
+			border: 1px solid #ddd;
+			/* Add a border */
+		}
+
+		#down {
+			/* Add padding */
+			margin-top: 5px 0;
+			/* Add margin */
+			border: 1px solid #ddd;
+			/* Add a border */
+		}
+
+		/* Apply styles to form buttons */
+		form {
+			text-align: center;
+			margin-top: 10px;
+		}
+
+		.table {
+			margin-right: 10px;
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>Insurance Packages List</h1>
+	</header>
+
+	<form action="filteredpackages">
+
+		<table>
+			<tr>
+				<td>Status:</td>
+				<td>
+					<select name="status" id="status">
+						<option name="ALL">ALL</option>
+						<option name="AC">AC</option>
+						<option name="NA">NA</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>Age Limit:</td>
+				<td><input type="text" name="age" id="age"></td>
+			</tr>
+		</table>
+		<input type="submit" value="Search">
+	</form>
+
+	<form action="excel">
+		<input type="hidden" id="statu" name="status">
+		<input type="hidden" id="ag" name="age">
+		<input type="submit" value="Download" onclick="downloadExcel()" id="down">
+	</form>
+
+	<h3>Add New Insurance Package</h3>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Title</th>
+				<th>Description</th>
+				<th>Status</th>
+				<th>Range Start</th>
+				<th>Range End</th>
+				<th>Age Limit Start</th>
+				<th>Age Limit End</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><input type="text" id="titleVal" class="form-control" value=""></td>
+				<td><input type="text" id="descVal" class="form-control" value=""></td>
+				<td><input type="text" id="statusVal" class="form-control" value=""></td>
+				<td><input type="number" id="rangeStartVal" class="form-control" value=""></td>
+				<td><input type="number" id="rangeEndVal" class="form-control" value=""></td>
+				<td><input type="number" id="ageLimitStartVal" class="form-control" value=""></td>
+				<td><input type="number" id="ageLimitEndVal" class="form-control" value=""></td>
+				<td><button onclick="addNewPackage()" class="btn btn-primary">Save</button></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<section>
+		<table id="packageTable">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Title</th>
+					<th>Description</th>
+					<th>Status</th>
+					<th>Range Start</th>
+					<th>Range End</th>
+					<th>Age Limit Start</th>
+					<th>Age Limit End</th>
+					<th>Diseases</th> <!-- Add a new column for the button -->
+					<th>Categories</th>
+					<th>del</th>
+					<th>upd</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- Loop through the insurance packages and display them in rows -->
+				<tr th:each="insurancePackage : ${insurancePackages}">
+					<td th:text="${insurancePackage.inspId}"></td>
+					<td th:text="${insurancePackage.inspTitle}"></td>
+					<td th:text="${insurancePackage.inspDescription}"></td>
+					<td th:text="${insurancePackage.inspStatus}"></td>
+					<td th:text="${insurancePackage.inspRangeStart}"></td>
+					<td th:text="${insurancePackage.inspRangeEnd}"></td>
+					<td th:text="${insurancePackage.inspAgeLimitStart}"></td>
+					<td th:text="${insurancePackage.inspAgeLimitEnd}"></td>
+					<td>
+						<!-- Add a button that links to the controller with the insurance ID as a parameter -->
+						<a th:href="@{'/diseases/' + ${insurancePackage.inspId} + '/' + ${insurancePackage.inspTitle}}"
+							class="btn btn-primary">Diseases</a>
+
+					</td>
+					<td>
+						<!-- Add a button that links to the controller with the insurance ID as a parameter -->
+						<a th:href="@{'/categories/' + ${insurancePackage.inspId}+'/'+ ${insurancePackage.inspTitle}}"
+							class="btn btn-primary">Categories</a>
+					</td>
+
+					<td>
+						<!-- Add a delete button with a data attribute for hospitalId -->
+						<span class="glyphicon glyphicon-trash delete-button"
+							th:attr="data-inspid=${insurancePackage.inspId}"></span>
+					</td>
+
+					<td>
+						<button th:onclick="editPackage(this)" class="btn btn-success">Edit</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</section>
+
+	<footer>
+		<!-- Add footer content if needed -->
+	</footer>
+	<script>
+		function addNewPackage() {
+			var title = document.getElementById("titleVal").value;
+			var desc = document.getElementById("descVal").value;
+			var status = document.getElementById("statusVal").value;
+			var rangeStart = parseFloat(document.getElementById("rangeStartVal").value); // Convert to double
+			var rangeEnd = parseFloat(document.getElementById("rangeEndVal").value); // Convert to double
+			var ageLimitStart = parseInt(document.getElementById("ageLimitStartVal").value); // Convert to int
+			var ageLimitEnd = parseInt(document.getElementById("ageLimitEndVal").value); // Convert to int
+			alert(title + desc + ageLimitEnd);
+			var data = {
+				inspId: 0, // Set to 0 or omit it if it's an auto-generated field
+				inspTitle: title,
+				inspDescription: desc,
+				inspStatus: status,
+				inspRangeStart: rangeStart,
+				inspRangeEnd: rangeEnd,
+				inspAgeLimitStart: ageLimitStart,
+				inspAgeLimitEnd: ageLimitEnd
+			};
+
+			$.ajax({
+				url: "/addPackageBh",
+				method: "POST",
+				contentType: "application/json", // Set the content type to JSON
+				data: JSON.stringify(data), // jQuery will serialize the object as JSON
+				success: function (message) {
+					location.reload();
+				},
+				error: function (xhr, status, error) {
+					console.error("Error Occurred:", status, error);
+				}
+			});
+		}
+
+
+		function downloadExcel() {
+			var status = document.getElementById("status").value;
+			var age = document.getElementById("age").value;
+			document.getElementById("statu").value = status;
+			document.getElementById("ag").value = age;
+
+		}
+
+
+		$(document).ready(function () {
+			$('.delete-button').on('click', function () {
+
+				var isp = $(this).data('inspid');
+				var button = this;
+
+				$.ajax({
+					type: 'POST',
+					url: '/deletePackagesBh', // Change this to your controller endpoint
+					data: {did: isp},
+					success: function (response) {
+						console.log("yes");
+						$(button).closest('tr').remove();
+						alert(response);
+					},
+					error: function () {
+						alert('Error deleting hospital');
+					}
+				});
+			});
+		});
+
+		//---------------------------------------------------------------------------------------
+
+
+
+
+		function editPackage(buttonElement) {
+			var parentRow = buttonElement.parentNode.parentNode;
+
+			var Id = parentRow.cells[0].textContent;
+			var title = parentRow.cells[1].textContent;
+			var desc = parentRow.cells[2].textContent;
+			var status = parentRow.cells[3].textContent;
+			var rangeStart = parentRow.cells[4].textContent;
+			var rangeEnd = parentRow.cells[5].textContent;
+			var ageLimitStrt = parentRow.cells[6].textContent;
+			var ageLimitEnd = parentRow.cells[7].textContent;
+
+			parentRow.removeChild(parentRow.cells[1]); // Remove cell 2 again to adjust for removed cell
+			parentRow.removeChild(parentRow.cells[1]); // Remove cell 3
+			parentRow.removeChild(parentRow.cells[1]); // Remove cell 4
+			parentRow.removeChild(parentRow.cells[1]); // Remove cell 5
+			parentRow.removeChild(parentRow.cells[1]);
+			parentRow.removeChild(parentRow.cells[1]);
+			parentRow.removeChild(parentRow.cells[1]);
+			parentRow.removeChild(parentRow.cells[1]);
+			parentRow.removeChild(parentRow.cells[1]);
+			parentRow.removeChild(parentRow.cells[1]);
+			parentRow.removeChild(parentRow.cells[1]);
+
+			var cell2 = document.createElement("td");
+			var cell21 = document.createElement("input");
+			cell21.setAttribute("id", "title");
+			cell21.setAttribute("name", "title");
+			cell21.setAttribute("value", title);
+			cell21.setAttribute("class", "form-control");
+			cell2.appendChild(cell21);
+
+			var cell3 = document.createElement("td");
+			var cell31 = document.createElement("input");
+			cell31.setAttribute("id", "Description");
+			cell31.setAttribute("name", "Description");
+			cell31.setAttribute("value", desc);
+			cell31.setAttribute("class", "form-control");
+			cell3.appendChild(cell31);
+
+			var cell4 = document.createElement("td");
+			var cell41 = document.createElement("input");
+			cell41.setAttribute("id", "status");
+			cell41.setAttribute("name", "status");
+			cell41.setAttribute("value", status);
+			cell41.setAttribute("class", "form-control");
+			cell4.appendChild(cell41);
+
+			var cell5 = document.createElement("td");
+			var cell51 = document.createElement("input");
+			cell51.setAttribute("id", "rangeStart");
+			cell51.setAttribute("name", "rangeStart");
+			cell51.setAttribute("value", rangeStart);
+			cell51.setAttribute("class", "form-control");
+			cell5.appendChild(cell51);
+
+			var cell6 = document.createElement("td");
+			var cell61 = document.createElement("input");
+			cell61.setAttribute("id", "rangeEnd");
+			cell61.setAttribute("name", "rangeEnd");
+			cell61.setAttribute("value", rangeEnd);
+			cell61.setAttribute("class", "form-control");
+			cell6.appendChild(cell61);
+
+			var cell7 = document.createElement("td");
+			var cell71 = document.createElement("input");
+			cell71.setAttribute("id", "ageLimitStrt");
+			cell71.setAttribute("name", "ageLimitStrt");
+			cell71.setAttribute("value", ageLimitStrt);
+			cell71.setAttribute("class", "form-control");
+			cell7.appendChild(cell71);
+
+			var cell8 = document.createElement("td");
+			var cell81 = document.createElement("input");
+			cell81.setAttribute("id", "ageLimitEnd");
+			cell81.setAttribute("name", "ageLimitEnd");
+			cell81.setAttribute("value", ageLimitEnd);
+			cell81.setAttribute("class", "form-control");
+			cell8.appendChild(cell81);
+
+			var cell9 = document.createElement("td");
+			cell9.innerHTML = `
+				<td>
+					<a th:href="@{'/diseases/' + Id + ''}" class="btn btn-primary">Diseases</a>
+				</td>
+			`;
+
+			var cell10 = document.createElement("td");
+			cell10.innerHTML = `
+				<td>
+					<a th:href="@{'/categories/' + Id + ''}"
+							class="btn btn-primary">Categories</a>
+				</td>
+			`;
+
+			var cell11 = document.createElement("td");
+			cell11.innerHTML = `
+				<td>
+					<span class="glyphicon glyphicon-trash delete-button"
+						th:attr="'data-inspid=' + Id + ''"></span>
+				</td>
+			`;
+
+			var cell12 = document.createElement("td");
+			cell12.innerHTML = `
+				<button onclick="savePackage(this)" class="edit-button btn btn-primary">Save</button>
+			`;
+
+			parentRow.appendChild(cell2);
+			parentRow.appendChild(cell3);
+			parentRow.appendChild(cell4);
+			parentRow.appendChild(cell5);
+			parentRow.appendChild(cell6);
+			parentRow.appendChild(cell7);
+			parentRow.appendChild(cell8);
+			parentRow.appendChild(cell9);
+			parentRow.appendChild(cell10);
+			parentRow.appendChild(cell11);
+			parentRow.appendChild(cell12);
+		}
+
+		function savePackage(buttonElement) {
+			var parentRow = buttonElement.parentNode.parentNode;
+			var Id = parentRow.cells[0].textContent;
+
+			var title = parentRow.cells[1].firstChild.value;
+			var desc = parentRow.cells[2].firstChild.value;
+			var status = parentRow.cells[3].firstChild.value;
+			var rangeStart = parentRow.cells[4].firstChild.value;
+			var rangeEnd = parentRow.cells[5].firstChild.value;
+			var ageLimitStrt = parentRow.cells[6].firstChild.value;
+			var ageLimitEnd = parentRow.cells[7].firstChild.value;
+
+			$.ajax({
+				url: "/editPackageBh?Id=" + Id + "&title=" + title + "&Description=" + desc + "&status=" + status + "&rangeStart=" + rangeStart + "&rangeEnd=" + rangeEnd + "&ageLimitStrt=" + ageLimitStrt + "&ageLimitEnd=" + ageLimitEnd,
+				method: "POST",
+				success: function (message) {
+					window.location.reload();
+				},
+				error: function (xhr, status, error) {
+					console.error("Error Occured: ", status, error);
+				}
+			});
+		}
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Insurance Policy</title>
+    
+    <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+     <style>
+        /* Style for the navigation bar */
+        .navbar {
+            background-color: #007BFF; /* Change this color to your preferred background color */
+            color: #fff; /* Text color for links */
+        }
+
+        /* Style for navigation links */
+        .navbar .nav-link {
+            color: #fff; /* Text color for links in the navigation bar */
+        }
+
+        /* Hover effect for navigation links */
+        .navbar .nav-link:hover {
+            color: #f8f9fa; /* Text color on hover */
+        }
+
+        /* Style for the form container */
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+
+        /* Style for form labels */
+        label {
+            font-weight: bold;
+        }
+
+        /* Style for form input fields */
+        .form-control {
+            border-radius: 3px;
+        }
+
+        /* Style for submit button */
+        .btn-primary {
+            background-color: #007BFF;
+            border: none;
+        }
+
+        /* Hover effect for submit button */
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+   <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <div>&#8801;</div>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/getpolicy}">View Policies</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/insertPolicyForm}">Create Policy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/getpolicySchedule}">View Schedule</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/updatepolicy}">Policy Approval</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/StatusPaymentById}">Tracking</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/link}">Home</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <div class="form-container">
+            <h2 class="text-center">Insert Insurance Policy Record</h2>
+            <form th:action="@{/insertPolicy}" th:object="${policy}" method="post">
+                <div class="form-group">
+                    <label for="iplcCustId">Customer ID:</label>
+                    <input class="form-control" type="number" id="iplcCustId" th:field="*{iplc_cust_id}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="iplcCdate">Policy Creation Date:</label>
+                    <input class="form-control" type="date" id="iplcCdate" th:field="*{iplc_cdate}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="iplcSumAssured">Sum Assured:</label>
+                    <input class="form-control" type="number" step="0.01" id="iplcSumAssured" th:field="*{iplc_sum_assured}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="iplcApplicableDate">Applicable Date:</label>
+                    <input class="form-control" type="date" id="iplcApplicableDate" th:field="*{iplc_applicable_date}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="iplcNomInsured">No of Members Insured:</label>
+                    <input class="form-control" type="number" id="iplcNomInsured" th:field="*{iplc_nom_insured}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="iplcInspId">Insurance Package ID:</label>
+                    <input class="form-control" type="number" id="iplcInspId" th:field="*{iplc_insp_id}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="iplcYrlyPremAmount">Yearly Premium Amount:</label>
+                    <input class="form-control" type="number" step="0.01" id="iplcYrlyPremAmount" th:field="*{iplc_yrly_prem_amount}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="iplcPaymodeCount">Payment Mode Count:</label>
+                    <input class="form-control" type="number" id="iplcPaymodeCount" th:field="*{iplc_paymode_count}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="iplcExpdate">Expiration Date:</label>
+                    <input class="form-control" type="date" id="iplcExpdate" th:field="*{iplc_expdate}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="iplcAgntId">Agent ID:</label>
+                    <input class="form-control" type="number" id="iplcAgntId" th:field="*{iplc_agnt_id}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="iplcStatus">Status:</label>
+                    <input class="form-control" type="text" id="iplcStatus" th:field="*{iplc_status}" required>
+                </div>
+
+                <button class="btn btn-primary btn-block" type="submit">Insert Policy Record</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

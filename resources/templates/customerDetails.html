@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Policy Details</title>
+    
+    <!-- Add Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Include jQuery via the CDN link -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="mt-4">Customer Details</h1><br>
+        <table class="table table-bordered" border="1">
+            <tr>
+                <th>Attribute</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Customer ID</td>
+                <td th:text="${customer.custId}"></td>
+            </tr>
+            <tr>
+                <td>First Name</td>
+                <td th:text="${customer.custFName}"></td>
+            </tr>
+            <tr>
+                <td>Last Name</td>
+                <td th:text="${customer.custLName}"></td>
+            </tr>
+            <tr>
+                <td>Date of Birth</td>
+                <td th:text="${customer.custDob}"></td>
+            </tr>
+            <tr>
+                <td>Address</td>
+                <td th:text="${customer.custAddress}"></td>
+            </tr>
+            <tr>
+                <td>Gender</td>
+                <td th:text="${customer.custGender}"></td>
+            </tr>
+            <tr>
+                <td>Creation Date</td>
+                <td th:text="${customer.custCDate}"></td>
+            </tr>
+            <tr>
+                <td>Aadhaar</td>
+                <td th:text="${customer.custAadhar}"></td>
+            </tr>
+            <tr>
+                <td>Status</td>
+                <td th:text="${customer.custStatus}" id="statusVal"></td>
+            </tr>
+            <tr>
+                <td>Last Updated Date</td>
+                <td th:text="${customer.custLuUDate}"></td>
+            </tr>
+            <tr>
+                <td>Last Updated User</td>
+                <td th:text="${customer.custLuUser}"></td>
+            </tr>
+        </table><br>
+        
+        <h2 class="mt-4">Policy Details</h2><br>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Creation Date</th>
+                    <th>Sum Assured</th>
+                    <th>Applicable Date</th>
+                    <th>Insurance ID</th>
+                    <th>Yearly Premium Amount</th>
+                    <th>Expiry Date</th>
+                    <th>Agent ID</th>
+                    <th>Mode</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="policy : ${policies}">
+                    <td th:text="${policy.iplcId}"></td>
+                    <td th:text="${#dates.format(policy.iplcCDate, 'dd-MM-yyyy')}"></td>
+                    <td th:text="${policy.iplcSumAssured}"></td>
+                    <td th:text="${#dates.format(policy.iplcApplicableDate, 'dd-MM-yyyy')}"></td>
+                    <td th:text="${policy.iplcInspId}"></td>
+                    <td th:text="${policy.iplcYrlyPremAmount}"></td>
+                    <td th:text="${#dates.format(policy.iplcExpDate, 'dd-MM-yyyy')}"></td>
+                    <td th:text="${policy.iplcAgntId}"></td>
+                    <td th:text="${policy.iplcMode}"></td>
+                    <td th:text="${policy.iplcStatus}"></td>
+                </tr>
+            </tbody>
+        </table><br>
+        
+        <button th:onclick="'updateStatus(' + ${customer.custId} + ')'" class="btn btn-secondary">Update Status</button>
+		<button id="backPage" class="btn btn-primary">Back</button><br><br>
+    </div>    
+    <script>
+		function updateStatus(id){
+
+			var statusElement = document.getElementById("statusVal");
+	        var currentStatus = statusElement.textContent;
+	        
+	        // Your logic to change the status, for example, toggle between Active and Inactive
+	        var newStatus = currentStatus === "Active" ? "Inactive" : "Active";
+	        
+	        // Update the HTML element with the new status
+	        statusElement.textContent = newStatus;
+			
+			$.ajax({
+				url : "/updateCStatus?Id=" + id + "&Status=" + newStatus,
+				method : "POST",
+				success : function(message){
+					//window.alert(message);
+					//location.reload();
+				},
+				error : function(xhr, status, error){
+					console.error("Error Occured: ", status, error);
+				}
+			});
+		}
+		
+		$("#backPage").click(function(){
+			window.location.href = "http://localhost:8080/getCustomers";
+		});
+	</script>
+</body>
+
+</html>
